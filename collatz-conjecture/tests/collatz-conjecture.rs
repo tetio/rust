@@ -23,7 +23,7 @@ fn even_and_odd_steps() {
 
 #[test]
 fn large_number_of_even_and_odd_steps() {
-    let output = collatz(1_000_000);
+    let output = collatz(10_000_000);
     let expected = Some(152);
     assert_eq!(output, expected);
 }
