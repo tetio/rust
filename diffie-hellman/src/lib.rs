@@ -1,21 +1,27 @@
-use rand::prelude::*;
+use rand::Rng;
 
 pub fn private_key(p: u64) -> u64 {
     rand::thread_rng().gen_range(2..p)
 }
 
+fn modular_exponentiation(base: u128, exp: u64, modular: u64) -> u64 {
+    let mut e = exp;
+    let mut b = base;
+    let mut result = 1;
+    while e > 0 {
+        if e % 2 == 1 {
+            result = (result * b) % modular as u128;
+        }
+        b = (b * b) % modular as u128;
+        e /= 2;
+    }
+    result as u64
+}
+
 pub fn public_key(p: u64, g: u64, a: u64) -> u64 {
-    pow(g,a) % p
+    modular_exponentiation(g as u128, a, p)
 }
 
 pub fn secret(p: u64, b_pub: u64, a: u64) -> u64 {
-    pow(b_pub,a) % p
-}
-
-
-fn pow(base: u64, exp: u64) -> u64{
-    match exp {
-        0 => 1u64,
-        _ => (1..=exp).into_iter().fold(1, |acc, _| {acc.checked_mul(base).unwrap()})
-    }
+    modular_exponentiation(b_pub as u128, a, p)
 }
